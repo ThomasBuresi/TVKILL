@@ -21,16 +21,16 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.*
 import android.preference.PreferenceManager.getDefaultSharedPreferences
-import android.support.v4.app.NotificationCompat
-import android.support.v4.os.CancellationSignal
+import androidx.core.app.NotificationCompat
+import androidx.core.os.CancellationSignal
 import com.redirectapps.tvkill.widget.UpdateWidget
 import java.io.Serializable
 import java.util.concurrent.Executors
@@ -86,8 +86,10 @@ class TransmitService : Service() {
     private lateinit var notificationBuilder: NotificationCompat.Builder
     private lateinit var notificationManager: NotificationManager
     private val statusObserver = Observer<TransmitServiceStatus> {
-        updateNotification()
-        UpdateWidget.updateAllWidgets(this)
+        if (it != null) {
+            updateNotification()
+            UpdateWidget.updateAllWidgets(this)
+        }
     }
     private var stopped = false
     private var pendingRequests = 0
@@ -96,10 +98,10 @@ class TransmitService : Service() {
         super.onCreate()
 
         val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
-        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "TransmitService")
+        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "myapp:TransmitService")
 
         val cancelIntent = buildIntent(TransmitServiceCancelRequest, this)
-        val pendingCancelIntent = PendingIntent.getService(this, PendingIntents.NOTIFICATION_CANCEL, cancelIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val pendingCancelIntent = PendingIntent.getService(this, PendingIntents.NOTIFICATION_CANCEL, cancelIntent,                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationBuilder = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL)
@@ -131,7 +133,7 @@ class TransmitService : Service() {
             notificationManager.createNotificationChannel(channel)
         }
 
-        status.observeForever(statusObserver)
+        //status.observeForever(statusObserver)
         isAppInForeground.observeForever {
             updateNotification()
         }

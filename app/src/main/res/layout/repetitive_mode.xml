@@ -29,7 +29,7 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true">
 
-        <android.support.design.widget.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/repetitive_mode_button"
             android:layout_width="100dp"
             android:layout_height="100dp"

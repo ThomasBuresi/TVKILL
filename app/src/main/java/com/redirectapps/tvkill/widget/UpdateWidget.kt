@@ -40,7 +40,9 @@ object UpdateWidget {
                         ),
                         context
                 ),
-                PendingIntent.FLAG_UPDATE_CURRENT)
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
 
         val cancelPendingIntent = PendingIntent.getService(
                 context,
@@ -49,7 +51,8 @@ object UpdateWidget {
                         TransmitServiceCancelRequest,
                         context
                 ),
-                PendingIntent.FLAG_UPDATE_CURRENT)
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
 
         val isRunning = TransmitService.status.value != null
 

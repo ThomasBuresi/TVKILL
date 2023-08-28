@@ -16,8 +16,8 @@
  */
 package com.redirectapps.tvkill
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
@@ -70,9 +70,11 @@ class Settings private constructor(context: Context) {
         appWidgetIds = Collections.unmodifiableSet(
                 HashSet<Int>(
                         preferences.getString(PREF_WIDGET_IDS, "")
-                                .split(",")
-                                .filter { !it.isEmpty() }
-                                .map { it.toInt() }
+                                ?.split(",")
+                                ?.filter { it.isNotEmpty() }
+                                ?.mapNotNull { it.toIntOrNull() }
+                                .orEmpty()
+
                 )
         )
     }
